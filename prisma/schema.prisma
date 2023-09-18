@@ -17,5 +17,16 @@ model User {
   email String
   createdAt DateTime @default(now())
   curso String
-  semestre String
+  semestre Int
+  posts Post[]
 }
+
+model Post {
+  id String @id @default(cuid())
+  content String @db.VarChar(120)
+  authorId String
+  author User @relation(fields: [authorId], references: [id])
+  likes Int @default(0)
+}
+
+

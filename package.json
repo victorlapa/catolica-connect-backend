@@ -12,7 +12,7 @@
     "zod": "^3.22.2"
   },
   "scripts": {
-    "dev": "tsx src/server.ts",
+    "dev": "tsx src/server.ts --watch",
     "build": "tsup src",
     "start": "node dist/server.js"
   },

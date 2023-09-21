@@ -28,5 +28,3 @@ model Post {
   author User @relation(fields: [authorId], references: [id])
   likes Int @default(0)
 }
-
-

@@ -6,12 +6,6 @@ const app = fastify();
 
 const prisma = new PrismaClient();
 
-app.get("/users", async () => {
-  const users = await prisma.user.findMany();
-
-  return { users };
-});
-
 app.post("/users", async (request, reply) => {
   const createUserSchema = z.object({
     name: z.string(),
@@ -54,6 +48,18 @@ app.post("/posts", async (request, reply) => {
     authorId: z.string(),
     likes: z.number().default(0),
   });
+
+  const { content, authorId, likes } = createPostSchema.parse(request.body);
+
+  await prisma.post.create({
+    data: {
+      content,
+      authorId,
+      likes,
+    },
+  });
+
+  return reply.status(201).send();
 });
 
 app

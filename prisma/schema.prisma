@@ -17,7 +17,7 @@ model User {
   email String
   createdAt DateTime @default(now())
   curso String
-  semestre Int
+  periodo Int
   posts Post[]
 }
 
@@ -28,5 +28,3 @@ model Post {
   author User @relation(fields: [authorId], references: [id])
   likes Int @default(0)
 }
-
-

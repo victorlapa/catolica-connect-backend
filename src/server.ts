@@ -18,10 +18,10 @@ app.post("/users", async (request, reply) => {
     email: z.string().email(),
     tag: z.string().min(4).max(18),
     curso: z.string(),
-    periodo: z.number().min(1).max(10),
+    semestre: z.number().min(1).max(10),
   });
 
-  const { name, email, tag, curso, periodo } = createUserSchema.parse(
+  const { name, email, tag, curso, semestre } = createUserSchema.parse(
     request.body
   );
 
@@ -35,7 +35,7 @@ app.post("/users", async (request, reply) => {
       email,
       tag,
       curso,
-      periodo,
+      semestre,
     },
   });
 

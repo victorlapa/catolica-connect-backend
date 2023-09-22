@@ -15,16 +15,31 @@ model User {
   tag String @db.VarChar(18)
   name String
   email String
-  createdAt DateTime @default(now())
   curso String
   periodo Int
+  description String?
   posts Post[]
+  groupId Group[]
+  createdAt DateTime @default(now())
 }
 
 model Post {
   id String @id @default(cuid())
   content String @db.VarChar(120)
-  authorId String
+  authorId String 
+  groupId Int @default(1)
+  imageUrl String? 
   author User @relation(fields: [authorId], references: [id])
+  group Group @relation(fields: [groupId], references: [id])
   likes Int @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Group {
+  id Int @id @default(autoincrement())
+  name String
+  description String
+  posts Post[]
+  users User[]
+  createdAt DateTime @default(now())
 }

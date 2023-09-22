@@ -12,20 +12,54 @@ app.get("/users", async () => {
   return { users };
 });
 
+app.get("/users/:id", async (request, reply) => {
+  const { id } = request.query as { id: string };
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  return { user };
+});
+
 app.post("/users", async (request, reply) => {
   const createUserSchema = z.object({
     name: z.string(),
     email: z.string().email(),
     tag: z.string().min(4).max(18),
     curso: z.string(),
-    semestre: z.number().min(1).max(10),
+    periodo: z.number().min(1).max(10),
+    description: z.string().max(60),
   });
 
-  const { name, email, tag, curso, semestre } = createUserSchema.parse(
-    request.body
-  );
+  app.delete("/users", async (request, reply) => {
+    const { id } = request.query as { id: string };
 
-  if (email.endsWith("@catolicasc.edu.br") === false) {
+    const userExists = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!userExists) {
+      return reply.status(400).send("Usuário não existe");
+    }
+
+    await prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return reply.status(201);
+  });
+
+  const { name, email, tag, curso, periodo, description } =
+    createUserSchema.parse(request.body);
+
+  if (!email.endsWith("@catolicasc.edu.br")) {
     return reply.status(400).send("Apenas emails CatolicaSC são permitidos");
   }
 
@@ -35,7 +69,8 @@ app.post("/users", async (request, reply) => {
       email,
       tag,
       curso,
-      semestre,
+      periodo,
+      description,
     },
   });
 

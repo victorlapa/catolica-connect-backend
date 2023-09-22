@@ -104,7 +104,7 @@ app.post("/posts", async (request, reply) => {
   return reply.status(201).send();
 });
 
-app.get("/groups", async (request, reply) => {
+app.get("/groups", async () => {
   const groups = await prisma.group.findMany();
 
   return { groups };

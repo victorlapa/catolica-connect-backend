@@ -31,7 +31,7 @@ app.post("/users", async (request, reply) => {
     tag: z.string().min(4).max(18),
     curso: z.string(),
     periodo: z.number().min(1).max(10),
-    description: z.string().max(60),
+    description: z.string().max(60).optional(),
   });
 
   const { name, email, tag, curso, periodo, description } =

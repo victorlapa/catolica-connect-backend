@@ -11,9 +11,9 @@ Essa aplicação está utilizando
 ## Executando localmente
 
 1. Para manter o versionamento dos pacotes, estamos usando pnmpm, para instalar:
-   ´npm i -g pnpm´
+   `npm i -g pnpm`
 2. Para instalar as dependências necessárias
-   ´pnpm install´
+   `pnpm install`
 
 ## Documentação
 
@@ -37,15 +37,15 @@ Parâmetros (Body)
 - description: STRING (0-60) caracteres - opcional
 
 Exemplo de request
-´https://catolicaconnect-api.onrender.com/users´
+`https://catolicaconnect-api.onrender.com/users`
 
-´{
+`{
 "name": "Teste teste",
 "email": "teste@catolicasc.edu.br",
 "tag": "testedev",
 "curso": "Eng. da Miguelagem",
 "periodo": 1
-}´
+}`
 
 #### DELETE
 

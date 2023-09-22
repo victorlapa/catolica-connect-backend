@@ -34,28 +34,6 @@ app.post("/users", async (request, reply) => {
     description: z.string().max(60),
   });
 
-  app.delete("/users", async (request, reply) => {
-    const { id } = request.query as { id: string };
-
-    const userExists = await prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-    });
-
-    if (!userExists) {
-      return reply.status(400).send("Usuário não existe");
-    }
-
-    await prisma.user.delete({
-      where: {
-        id: id,
-      },
-    });
-
-    return reply.status(201);
-  });
-
   const { name, email, tag, curso, periodo, description } =
     createUserSchema.parse(request.body);
 
@@ -75,6 +53,28 @@ app.post("/users", async (request, reply) => {
   });
 
   return reply.status(201).send();
+});
+
+app.delete("/users", async (request, reply) => {
+  const { id } = request.query as { id: string };
+
+  const userExists = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!userExists) {
+    return reply.status(400).send("Usuário não existe");
+  }
+
+  await prisma.user.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  return reply.status(201);
 });
 
 app.get("/posts", async () => {

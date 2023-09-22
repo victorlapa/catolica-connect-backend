@@ -88,6 +88,7 @@ app.post("/posts", async (request, reply) => {
     content: z.string().min(1).max(120),
     authorId: z.string(),
     likes: z.number().default(0),
+    imageUrl: z.string().optional(),
   });
 
   const { content, authorId, likes } = createPostSchema.parse(request.body);
@@ -101,6 +102,56 @@ app.post("/posts", async (request, reply) => {
   });
 
   return reply.status(201).send();
+});
+
+app.get("/groups", async (request, reply) => {
+  const groups = await prisma.group.findMany();
+
+  return { groups };
+});
+
+app.post("/groups", async (request, reply) => {
+  const createGroupSchema = z.object({
+    name: z.string().min(2).max(120),
+    description: z.string().optional(),
+    createdBy: z.string().cuid(),
+  });
+
+  const { name, createdBy, description } = createGroupSchema.parse(
+    request.body
+  );
+
+  await prisma.group.create({
+    data: {
+      createdBy,
+      name,
+      description,
+    },
+  });
+
+  return reply.status(201).send();
+});
+
+app.delete("/groups/:id", async (request, reply) => {
+  const { id } = request.query as { id: number };
+
+  const groupExists = await prisma.group.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!groupExists) {
+    return reply.status(400).send("Grupo não existe");
+  }
+
+  await prisma.group.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  return reply.status(201);
 });
 
 app

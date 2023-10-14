@@ -3,14 +3,15 @@ import fastify from "fastify";
 import { z } from "zod";
 
 const app = fastify();
+app.register((fastify, options, done) => {
+  fastify.register(require("fastify-cors"), {
+    origin: "*",
+    methods: ["GET", "POST", "DELETE", "PUT"],
+  });
+  done();
+});
 
 const prisma = new PrismaClient();
-
-app.get("/posts", async () => {
-  const posts = await prisma.post.findMany();
-
-  return { posts };
-});
 
 app.get("/users", async () => {
   const users = await prisma.user.findMany();
@@ -81,6 +82,12 @@ app.delete("/users", async (request, reply) => {
   });
 
   return reply.status(201);
+});
+
+app.get("/posts", async () => {
+  const posts = await prisma.post.findMany();
+
+  return { posts };
 });
 
 app.post("/posts", async (request, reply) => {

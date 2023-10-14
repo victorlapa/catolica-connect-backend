@@ -3,23 +3,21 @@ import fastify from "fastify";
 import { z } from "zod";
 
 const app = fastify();
-app.register((fastify, options, done) => {
-  fastify.register(require("fastify-cors"), {
-    origin: "*",
-    methods: ["GET", "POST", "DELETE", "PUT"],
-  });
-  done();
-});
 
 const prisma = new PrismaClient();
 
-app.get("/users", async () => {
+app.get("/users", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "GET");
   const users = await prisma.user.findMany();
 
   return { users };
 });
 
 app.get("/users/:id", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "GET");
+
   const { id } = request.query as { id: string };
 
   const user = await prisma.user.findUnique({
@@ -32,6 +30,9 @@ app.get("/users/:id", async (request, reply) => {
 });
 
 app.post("/users", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "POST");
+
   const createUserSchema = z.object({
     name: z.string(),
     email: z.string().email(),
@@ -63,6 +64,9 @@ app.post("/users", async (request, reply) => {
 });
 
 app.delete("/users", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "DELETE");
+
   const { id } = request.query as { id: string };
 
   const userExists = await prisma.user.findUnique({
@@ -84,13 +88,19 @@ app.delete("/users", async (request, reply) => {
   return reply.status(201);
 });
 
-app.get("/posts", async () => {
+app.get("/posts", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "GET");
+
   const posts = await prisma.post.findMany();
 
   return { posts };
 });
 
 app.post("/posts", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "POST");
+
   const createPostSchema = z.object({
     content: z.string().min(1).max(120),
     authorId: z.string(),
@@ -111,13 +121,19 @@ app.post("/posts", async (request, reply) => {
   return reply.status(201).send();
 });
 
-app.get("/groups", async () => {
+app.get("/groups", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "GET");
+
   const groups = await prisma.group.findMany();
 
   return { groups };
 });
 
 app.post("/groups", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "POST");
+
   const createGroupSchema = z.object({
     name: z.string().min(2).max(120),
     description: z.string().optional(),
@@ -140,6 +156,9 @@ app.post("/groups", async (request, reply) => {
 });
 
 app.delete("/groups/:id", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "DELETE");
+
   const { id } = request.query as { id: number };
 
   const groupExists = await prisma.group.findUnique({

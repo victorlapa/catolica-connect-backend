@@ -14,7 +14,7 @@ app.get("/users", async (request, reply) => {
   return { users };
 });
 
-app.get("/users/:id", async (request, reply) => {
+app.get("/users", async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   reply.header("Access-Control-Allow-Methods", "GET");
 
@@ -99,7 +99,10 @@ app.get("/posts", async (request, reply) => {
 
 app.post("/posts", async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
-  reply.header("Access-Control-Allow-Methods", "POST");
+  reply.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
 
   const createPostSchema = z.object({
     content: z.string().min(1).max(120),

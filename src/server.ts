@@ -99,6 +99,7 @@ app.get("/posts", async (request, reply) => {
 
 app.options("/posts", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "POST");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
@@ -108,6 +109,7 @@ app.options("/posts", (req, res) => {
 
 app.post("/posts", async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "POST");
   reply.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"

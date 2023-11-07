@@ -97,6 +97,15 @@ app.get("/posts", async (request, reply) => {
   return { posts };
 });
 
+app.options("/posts", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.send();
+});
+
 app.post("/posts", async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   reply.header(

@@ -14,11 +14,11 @@ app.get("/users", async (request, reply) => {
   return { users };
 });
 
-app.get("/users", async (request, reply) => {
+app.get("/users/:id", async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   reply.header("Access-Control-Allow-Methods", "GET");
 
-  const { id } = request.query as { id: string };
+  const { id } = request.params as { id: string };
 
   const user = await prisma.user.findUnique({
     where: {

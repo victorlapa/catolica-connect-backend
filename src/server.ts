@@ -1,12 +1,73 @@
 import { PrismaClient } from "@prisma/client";
-import fastify from "fastify";
+import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
+const jwt = require("jsonwebtoken");
+const fastifyJwt = require("fastify-jwt");
 
 const app = fastify();
 
 const prisma = new PrismaClient();
 
-app.get("/users", async (request, reply) => {
+app.register(fastifyJwt, {
+  secret: process.env.ACCESS_TOKEN_SECRET,
+});
+
+const authenticate = async (request: any, reply: any) => {
+  try {
+    await request.jwtVerify();
+
+    const userId = request.user.userId;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      return reply.status(401).send({ error: "User not found" });
+    }
+
+    request.user = user;
+  } catch (err) {
+    reply.status(401).send({ error: "Unauthorized" });
+  }
+};
+
+app.options("/login", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "POST");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.send();
+});
+
+app.post("/login", async (request, reply) => {
+  const { email, password } = request.body as {
+    email: string;
+    password: string;
+  };
+
+  const user = await prisma.user.findFirst({
+    where: {
+      email,
+      password,
+    },
+  });
+
+  if (!user) {
+    return reply.status(401).send({ error: "Invalid credentials" });
+  }
+
+  const token = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "999h",
+  });
+  reply.send({ token });
+});
+
+app.get("/users", { preHandler: [authenticate] }, async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   reply.header("Access-Control-Allow-Methods", "GET");
   const users = await prisma.user.findMany();
@@ -40,9 +101,10 @@ app.post("/users", async (request, reply) => {
     curso: z.string(),
     periodo: z.number().min(1).max(10),
     description: z.string().max(60).optional(),
+    password: z.string().min(8).max(16),
   });
 
-  const { name, email, tag, curso, periodo, description } =
+  const { name, email, tag, curso, periodo, description, password } =
     createUserSchema.parse(request.body);
 
   if (!email.endsWith("@catolicasc.edu.br")) {
@@ -57,6 +119,7 @@ app.post("/users", async (request, reply) => {
       curso,
       periodo,
       description,
+      password,
     },
   });
 

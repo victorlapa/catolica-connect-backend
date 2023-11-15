@@ -21,6 +21,7 @@ model User {
   posts Post[]
   groupId Group[]
   createdAt DateTime @default(now())
+  password String @db.VarChar(16)
 }
 
 model Post {

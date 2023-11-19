@@ -90,6 +90,16 @@ app.get("/users/:id", async (request, reply) => {
   return { user };
 });
 
+app.options("/users", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "POST");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.send();
+});
+
 app.post("/users", async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   reply.header("Access-Control-Allow-Methods", "POST");

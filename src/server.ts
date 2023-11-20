@@ -45,6 +45,9 @@ app.options("/login", (req, res) => {
 });
 
 app.post("/login", async (request, reply) => {
+  reply.header("Access-Control-Allow-Origin", "*");
+  reply.header("Access-Control-Allow-Methods", "POST");
+
   const { email, password } = request.body as {
     email: string;
     password: string;

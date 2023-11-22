@@ -177,6 +177,7 @@ app.get("/posts", async (request, reply) => {
           curso: true,
           periodo: true,
           description: true,
+          profileImgUrl: true,
         },
       },
     },

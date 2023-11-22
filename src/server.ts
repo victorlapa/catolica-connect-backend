@@ -170,7 +170,15 @@ app.get("/posts", async (request, reply) => {
 
   const posts = await prisma.post.findMany({
     include: {
-      author: true,
+      author: {
+        select: {
+          name: true,
+          tag: true,
+          curso: true,
+          periodo: true,
+          description: true,
+        },
+      },
     },
   });
 

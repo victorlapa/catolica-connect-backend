@@ -118,8 +118,16 @@ app.put("/users/:id", { preHandler: [authenticate] }, async (req, res) => {
     profileImgUrl: z.string().optional(),
   });
 
-  const { name, email, tag, curso, periodo, description, password } =
-    updateUserSchema.parse(req.body);
+  const {
+    name,
+    email,
+    tag,
+    curso,
+    periodo,
+    description,
+    password,
+    profileImgUrl,
+  } = updateUserSchema.parse(req.body);
 
   await prisma.user.update({
     where: {
@@ -133,6 +141,7 @@ app.put("/users/:id", { preHandler: [authenticate] }, async (req, res) => {
       periodo,
       description,
       password,
+      profileImgUrl,
     },
   });
 

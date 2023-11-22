@@ -93,9 +93,55 @@ app.get("/users/:id", async (request, reply) => {
   return { user };
 });
 
+app.put("/users/:id", { preHandler: [authenticate] }, async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+
+  const { id } = req.params as { id: string };
+
+  const userExists = await prisma.user.findFirst({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!userExists) return res.status(400).send("Usuário não existe");
+
+  const updateUserSchema = z.object({
+    name: z.string().optional(),
+    email: z.string().email().optional(),
+    tag: z.string().min(4).max(18).optional(),
+    curso: z.string().optional(),
+    periodo: z.number().min(1).max(10).optional(),
+    description: z.string().max(60).optional(),
+    password: z.string().min(8).max(16).optional(),
+    profileImgUrl: z.string().optional(),
+  });
+
+  const { name, email, tag, curso, periodo, description, password } =
+    updateUserSchema.parse(req.body);
+
+  await prisma.user.update({
+    where: {
+      id: id,
+    },
+    data: {
+      name,
+      email,
+      tag,
+      curso,
+      periodo,
+      description,
+      password,
+    },
+  });
+
+  return res.status(200).send({ message: "Usuário atualizado com sucesso" });
+});
+
 app.options("/users", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "POST");
+  res.header("Access-Control-Allow-Methods", "*");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"

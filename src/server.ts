@@ -168,7 +168,11 @@ app.get("/posts", async (request, reply) => {
   reply.header("Access-Control-Allow-Origin", "*");
   reply.header("Access-Control-Allow-Methods", "GET");
 
-  const posts = await prisma.post.findMany();
+  const posts = await prisma.post.findMany({
+    include: {
+      author: true,
+    },
+  });
 
   return { posts };
 });

@@ -88,6 +88,9 @@ app.get("/users/:id", async (request, reply) => {
     where: {
       id: id,
     },
+    include: {
+      posts: true,
+    },
   });
 
   return { user };

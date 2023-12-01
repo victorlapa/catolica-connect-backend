@@ -227,6 +227,9 @@ app.get("/posts", async (request, reply) => {
   reply.header("Access-Control-Allow-Methods", "GET");
 
   const posts = await prisma.post.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
     include: {
       author: {
         select: {
